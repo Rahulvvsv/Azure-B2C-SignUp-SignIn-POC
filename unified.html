@@ -664,7 +664,7 @@
           $("*").removeAttr("placeholder");
       });
     </script>
-    <script type="text/javascript" defer>
+    <script>
       function getQueryParam(param) {
         const urlParams = new URLSearchParams(window.location.search);
         console.log(urlParams);
@@ -694,6 +694,8 @@
       window.onload = function () {
         // Check for a custom parameter (e.g., "option=signup") in the URL
         const option = getQueryParam("option");
+        console.log(option);
+        console.log("hello ther how are you guys doing?");
         if (option === "signup") {
           triggerSignUp(); // Trigger the sign-up form if the "option" is set to "signup"
         }
