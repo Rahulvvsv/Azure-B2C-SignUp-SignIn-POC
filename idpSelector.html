@@ -1,7 +1,7 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <title>Sign up or sign in</title>
+    <title>Choose your account</title>
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta charset="utf-8" />
@@ -470,122 +470,18 @@
     </style>
 
     <style>
-      .rememberMe input[type="checkbox"] {
-        vertical-align: middle;
-        position: relative;
-        bottom: -2.5px;
-        width: 13px;
-      }
-      .rememberMe label {
-        display: inline-block;
-      }
-
       /* Following are generated styles via gulp. */
       /* inject: css */
-      .intro {
-        display: inline;
-        margin-bottom: 5px;
+      #api div div,
+      #api ul,
+      #api ul li {
+        float: left;
       }
-      .intro p {
-        padding-bottom: 7px;
+      #api ul {
+        padding-bottom: 15px;
       }
-      .entry {
-        padding-top: 8px;
-        padding-bottom: 0 !important;
-      }
-      .entry input {
-        -moz-border-radius: 0;
-        -webkit-border-radius: 0;
-        border-radius: 0;
-        height: 28px;
-        width: 300px;
-        border: 1px solid #b8b8b8;
-        z-index: 3;
-        background: 0 0;
-        color: #000;
-        padding: 0 0 0 3px;
-        -moz-box-shadow: 0 0 0;
-        -webkit-box-shadow: 0 0 0;
-        box-shadow: 0 0 0;
-        margin-bottom: 7px;
-      }
-      #next {
-        padding-left: 10px;
-        padding-right: 10px;
-        height: 30.5px;
-      }
-      #next:hover,
-      .accountButton:hover {
-        -moz-box-shadow: 0 0 0;
-        -webkit-box-shadow: 0 0 0;
-        box-shadow: 0 0 0;
-      }
-      .create {
-        width: 100%;
-        margin-top: 7px;
-      }
-      #createAccount {
-        margin-left: 5px;
-      }
-      .password-label label {
-        display: inline-block;
-        vertical-align: baseline;
-      }
-      .invalid,
-      .required,
-      .unknown {
-        display: none;
-      }
-      #forgotPassword {
-        font-size: 0.75em;
-        padding-left: 5px;
-      }
-      .passwordReqs {
-        display: block;
-        font-size: 0.8em;
-        padding-bottom: 2px;
-      }
-      .localAccount .divider,
-      .working {
-        display: none;
-      }
-      .tiny {
-        font-size: 0.8em;
-        font-weight: 400;
-        padding-left: 5px;
-      }
-      .divider {
-        margin-top: 20px;
-        margin-bottom: 10px;
-      }
-      .divider h2 {
-        display: table;
-        white-space: nowrap;
-        font-size: 1em;
-        font-weight: 700;
-      }
-      .divider h2:after,
-      .divider h2:before {
-        border-top: 1px solid #b8b8b8;
-        content: "";
-        display: table-cell;
-        position: relative;
-        top: 0.7em;
-        width: 50%;
-      }
-      .divider h2:before {
-        right: 1.8%;
-      }
-      .divider h2:after {
-        left: 1.8%;
-      }
-      .verificationErrorText {
-        color: #d63301;
-      }
-      .options div {
-        display: inline-block;
-        vertical-align: top;
-        margin-top: 7px;
+      #api ul li {
+        height: 37px;
       }
       /* endinject */
     </style>
@@ -598,7 +494,7 @@
       <img
         id="background_background_image"
         data-tenant-branding-background="true"
-        src="https://kineticloud.b2clogin.com/default/img/default_signin_illustration_optimized.png"
+        src="https://login.microsoftonline.com/templates/src/classic/img/default_signin_illustration_optimized.png"
         alt="Illustration"
         aria-hidden="true"
       />
@@ -607,7 +503,7 @@
       <table class="panel_layout" role="presentation">
         <tbody>
           <tr class="panel_layout_row">
-            <td id="panel_left"></td>
+            <td id="panel_left" />
             <td id="panel_center">
               <div class="inner_container">
                 <div class="api_container normaltext">
@@ -625,7 +521,45 @@
         </tbody>
       </table>
     </div>
-
+    <script>
+      "use strict";
+      $(document).ready(function () {
+        if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
+          var t = document.createElement("style");
+          t.appendChild(
+            document.createTextNode("@-ms-viewport{width:auto!important}")
+          ),
+            t.appendChild(
+              document.createTextNode("@-ms-viewport{height:auto!important}")
+            ),
+            document.getElementsByTagName("head")[0].appendChild(t);
+        }
+        if (navigator.userAgent.match(/MSIE 10/i)) {
+          var e = $("#footer_links_container");
+          $(e).css("padding-top", "100px");
+        }
+        var o,
+          i = $("#background_background_image"),
+          n = function () {
+            (document.body.style.overflow = "hidden"),
+              ($(window).width() - 500) / $(window).height() < o
+                ? (i.height($(window).height()), i.width("auto"))
+                : (i.width($(window).width() - 500), i.height("auto")),
+              (document.body.style.overflow = "");
+          };
+        $("<img>")
+          .attr("src", i.attr("src"))
+          .on("load", function () {
+            (o = this.width / this.height), n();
+          }),
+          $(window).resize(function () {
+            n();
+          }),
+          "undefined" != typeof $("#MicrosoftAccountExchange") &&
+            $("#MicrosoftAccountExchange").text("Microsoft"),
+          $("*").removeAttr("placeholder");
+      });
+    </script>
     <script>
       function getQueryParam(param) {
         const urlParams = new URLSearchParams(window.location.search);
