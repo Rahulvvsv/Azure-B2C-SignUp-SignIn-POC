@@ -111,6 +111,7 @@ app.get("/login", async (req: Request, res: Response) => {
 
   const b2cSignUpSignInUrl = `https://${tenantName}.b2clogin.com/${tenantName}.onmicrosoft.com/${policy}/oauth2/v2.0/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&response_mode=form_post&scope=${encodedTokenScope}&state=${persistedState}&code_challenge=${codeChallenge}&code_challenge_method=${codeChallengeMethod}&login_hint=${encodedEmail}&prompt=login&local=signup&option=signup`;
 
+  console.log(b2cSignUpSignInUrl);
   res.redirect(b2cSignUpSignInUrl);
 });
 

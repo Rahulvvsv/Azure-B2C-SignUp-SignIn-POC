@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script type="text/javascript" defer>
+      function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        console.log(urlParams);
+        return urlParams.get(param);
+      }
+
+      // Function to trigger the sign-up link programmatically
+      function triggerSignUp() {
+        console.log("im here man");
+        const signUpLink = document.getElementById("createAccount");
+        if (signUpLink) {
+          signUpLink.click(); // Programmatically triggers the sign-up link
+        }
+      }
+
+      function prefillEmail() {
+        const loginHint = getQueryParam("login_hint");
+        if (loginHint) {
+          const emailInput = document.getElementById("email");
+          if (emailInput) {
+            emailInput.value = loginHint;
+            emailInput.dispatchEvent(new Event("input")); // Ensure that change event listeners are triggered
+          }
+        }
+      }
+
+      // Execute when the page loads
+      window.onload = function () {
+        // Check for a custom parameter (e.g., "option=signup") in the URL
+        const option = getQueryParam("option");
+        console.log(option);
+        console.log("hello ther how are you guys doing?");
+        if (option === "signup") {
+          triggerSignUp(); // Trigger the sign-up form if the "option" is set to "signup"
+        }
+
+        // Prefill the email field with the login_hint if available
+        prefillEmail();
+      };
+    </script>
+  </head>
+  <body>
+    <div id="api" role="main"></div>
+    <script type="text/javascript" defer>
+      function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        console.log(urlParams);
+        return urlParams.get(param);
+      }
+
+      // Function to trigger the sign-up link programmatically
+      function triggerSignUp() {
+        console.log("im here man");
+        const signUpLink = document.getElementById("createAccount");
+        if (signUpLink) {
+          signUpLink.click(); // Programmatically triggers the sign-up link
+        }
+      }
+
+      function prefillEmail() {
+        const loginHint = getQueryParam("login_hint");
+        if (loginHint) {
+          const emailInput = document.getElementById("email");
+          if (emailInput) {
+            emailInput.value = loginHint;
+            emailInput.dispatchEvent(new Event("input")); // Ensure that change event listeners are triggered
+          }
+        }
+      }
+
+      // Execute when the page loads
+      window.onload = function () {
+        // Check for a custom parameter (e.g., "option=signup") in the URL
+        const option = getQueryParam("option");
+        console.log(option);
+        console.log("hello ther how are you guys doing?");
+        if (option === "signup") {
+          triggerSignUp(); // Trigger the sign-up form if the "option" is set to "signup"
+        }
+
+        // Prefill the email field with the login_hint if available
+        prefillEmail();
+      };
+    </script>
+  </body>
+</html>
