@@ -81,7 +81,7 @@ async function generateCodeChallenge(codeVerifier: string): Promise<string> {
 const tenantName = "kineticloudb2c";
 // const policy = "B2C_1_POC_Sorina";
 
-const policy = "B2C_1_SignUPSignInTest";
+const policy = "B2C_1_SignUpTest";
 const clientId = "c7ff1498-dbac-4aed-bea4-9ffd9c98570d";
 const redirectUri = "https://2be6-84-125-125-57.ngrok-free.app/auth-response";
 const tenantId = "902b0036-8178-4e76-87f6-febcc72f2570";
