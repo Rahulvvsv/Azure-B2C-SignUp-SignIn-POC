@@ -645,7 +645,7 @@
       function prefillEmail() {
         const loginHint = getQueryParam("login_hint");
         if (loginHint) {
-          const emailInput = document.querySelector('input[type="email"]');
+          const emailInput = document.getElementById("email");
           if (emailInput) {
             emailInput.value = loginHint;
             emailInput.dispatchEvent(new Event("input")); // Ensure that change event listeners are triggered
