@@ -34,58 +34,56 @@
         console.log("Redirecting to sign-up URL: ", signUpUrl);
         window.location.href = signUpUrl;
       } else {
-        console.log('Sign-up link not found.');
+        console.log('Sign-up link not found');
       }
     }
 
-    // Prefill email after navigating to the sign-up form
-    function prefillEmailAfterNavigation() {
+    // Function to programmatically click the sign-up link if it exists
+    function triggerSignUp() {
+      console.log("DEBUG --- Trying to trigger sign-up click");
+      const signUpLink = document.getElementById("createAccount");
+      if (signUpLink) {
+        console.log('Sign-up link found. Triggering click.');
+        signUpLink.click();
+      } else {
+        console.log('Sign-up link not found for triggering click.');
+      }
+    }
+
+    // Function to check if we're on the signup page by looking for the label
+    function isOnSignUpPage() {
+      return document.getElementById("emailVerificationControl_label") !== null;
+    }
+
+    // Function to pre-fill email input based on URL parameter
+    function prefillEmail() {
       const loginHint = getQueryParam("login_hint");
       if (loginHint) {
-        console.log('Email found in URL, waiting for input field to appear...');
-
-        // Mutation Observer to detect if we are on the sign-up page (only run after navigation)
-        const emailInputObserver = new MutationObserver((mutations) => {
-          mutations.forEach((mutation) => {
-            mutation.addedNodes.forEach((node) => {
-              // Make sure we're on the second page, not the first
-              if (document.querySelector("form") && document.querySelector("form").id === "signupForm") {
-                const emailInput = document.querySelector("#email");
-                if (emailInput) {
-                  console.log('Prefilling email with value: ', loginHint);
-                  emailInput.value = loginHint;
-                  emailInput.dispatchEvent(new Event("input"));
-                  emailInputObserver.disconnect();  // Stop observing once email is filled
-                }
-              }
-            });
-          });
-        });
-
-        // Observe for input elements to be added (or just observe the form)
-        emailInputObserver.observe(document.body, { childList: true, subtree: true });
+        const emailInput = document.getElementById("emailVerificationControl");
+        if (emailInput) {
+          console.log('Prefilling email with value: ', loginHint);
+          emailInput.value = loginHint;
+          emailInput.dispatchEvent(new Event("input"));
+        } else {
+          console.log('Email input field not found.');
+        }
       } else {
         console.log('No login_hint provided in the URL.');
       }
     }
 
-    // Mutation Observer to detect dynamic DOM changes and trigger sign-up link click
-    function observeSignUpLink() {
-      console.log('Starting mutation observer to detect sign-up link');
-      const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-          mutation.addedNodes.forEach((node) => {
-            const signUpLink = document.getElementById("createAccount");
-            if (signUpLink) {
-              console.log('Sign-up link added to the DOM. Navigating to sign-up.');
-              navigateToSignUp();
-              observer.disconnect(); // Stop observing after navigation
-            }
-          });
-        });
+    // Mutation Observer to detect dynamic DOM changes and trigger email pre-fill on sign-up page
+    function observeSignUpForm() {
+      console.log('Starting mutation observer to detect email form on the sign-up page');
+      const observer = new MutationObserver(() => {
+        if (isOnSignUpPage()) {
+          console.log('Sign-up form detected. Prefilling email.');
+          prefillEmail();
+          observer.disconnect(); // Stop observing after pre-filling email
+        }
       });
 
-      // Observe the document for changes
+      // Observe the whole document for changes
       observer.observe(document.body, { childList: true, subtree: true });
     }
 
@@ -93,19 +91,18 @@
     window.addEventListener('load', function () {
       console.log('Page loaded. Initializing script execution.');
       const option = getQueryParam("option");
+      console.log(`Option in URL: ${option}`);
 
       // Start observing if "signup" option is in the URL query parameters
       if (option === "signup") {
         console.log('Signup option detected. Observing DOM for sign-up link.');
-        observeSignUpLink();
+        observeSignUpForm();
       } else {
         console.log('Signup option not present in the URL.');
       }
-
-      // Prefill email ONLY on the sign-up page (second page, not login)
-      prefillEmailAfterNavigation();
     });
   </script>
+
 
 
 
