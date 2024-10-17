@@ -22,6 +22,7 @@
     }
 
     function navigateToSignUp() {
+      console.log('getting signup link')
       const signUpLink = document.getElementById('createAccount');
       if (signUpLink) {
         const signUpUrl = signUpLink.getAttribute('href');
@@ -54,6 +55,7 @@
       const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
           if (mutation.addedNodes.length > 0) {
+            console.log('checking mutations')
             const signUpLink = document.getElementById("createAccount");
             if (signUpLink) {
               navigateToSignUp(); // Trigger sign-up link if it appears
