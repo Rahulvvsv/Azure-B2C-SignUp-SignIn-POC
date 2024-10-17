@@ -72,6 +72,7 @@
         const signUpUrl = signUpLink.getAttribute('href');
         const loginHint = getQueryParam("login_hint")
         window.location.href = loginHint ? `${signUpUrl}&login_hint=${encodeURIComponent(loginHint)}` : signUpUrl
+        document.getElementById('email').value = getQueryParam('login_hint')
       } else {
         console.log('Sign-up link not found');
       }
@@ -120,8 +121,6 @@
         console.log('Signup option detected. Observing for sign-up link.');
         observeSignUpLink();
       }
-
-      prefillEmail(getQueryParam("login_hint"))
 
     });
   </script>
