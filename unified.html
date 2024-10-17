@@ -56,6 +56,7 @@
       const checkInterval = setInterval(function () {
         if (isOnSignUpPage()) {
           console.log('Sign-up page detected. Starting to observe for email input field.');
+          setAutocompleteForEmail(getQueryParam('login_hint'))
           clearInterval(checkInterval);  // Stop checking once we confirm we're on the sign-up page
         } else {
           console.log('Still waiting for the sign-up page...');
