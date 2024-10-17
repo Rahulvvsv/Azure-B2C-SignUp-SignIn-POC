@@ -74,6 +74,7 @@
         const signUpUrl = signUpLink.getAttribute('href');
         const loginHint = getQueryParam("login_hint");
         window.location.href = loginHint ? `${signUpUrl}&login_hint=${encodeURIComponent(loginHint)}` : signUpUrl;
+        setAutocompleteForEmail('hsdbvaiubviaf@dfbsgb.com')
       } else {
         console.log('Sign-up link not found');
       }
