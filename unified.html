@@ -14,7 +14,6 @@
     content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes"
   />
   <script type="text/javascript" async>
-
     function getQueryParam(param) {
       const urlParams = new URLSearchParams(window.location.search);
       const value = urlParams.get(param);
@@ -23,46 +22,36 @@
     }
 
     // Function to pre-fill email input based on URL parameter
-    function prefillEmail(loginHint) {
+    function prefillEmail() {
+      const loginHint = getQueryParam('login_hint');
+      if (loginHint) {
         console.log('Email found in URL, waiting for input field to appear...');
-
-        const emailInput = document.getElementById("email");
-        console.log('email', emailInput)
+        const emailInput = document.getElementById('email');
         if (emailInput) {
           console.log('Prefilling email field with: ', loginHint);
           emailInput.value = loginHint;
-          emailInput.dispatchEvent(new Event("input"));  // Trigger input event to simulate typing
+          emailInput.dispatchEvent(new Event('input'));  // Trigger input event to simulate typing
         } else {
           console.log('Email input field not found yet, retrying...');
         }
+      } else {
+        console.log('No login_hint provided in the URL.');
+      }
     }
 
-    // Function to check if we're on the sign-up page
-    function isOnSignUpPage() {
-      const labelExists = document.getElementById("emailVerificationControl_label");
-      return labelExists !== null;
+    // Function to observe and wait for the email input field
+    function observeEmailField() {
+      const checkInterval = setInterval(function () {
+        const emailInput = document.getElementById('email');
+        if (emailInput) {
+          console.log('Email input field detected. Prefilling now.');
+          prefillEmail();  // Prefill email as soon as the field appears
+          clearInterval(checkInterval);  // Stop observing once the email input is found
+        } else {
+          console.log('Still waiting for the email input field...');
+        }
+      }, 500);  // Check every 500ms to see if the email input field appears
     }
-
-    // Function to observe the email input field on the sign-up page
-    // function observeEmailField() {
-    //   const loginHint = getQueryParam('login_hint')
-    //   console.log('login hint:', loginHint)
-    //   const checkInterval  = setInterval(function () {
-    //     if (isOnSignUpPage()) {
-    //       const emailInput = document.querySelector("#email")
-    //
-    //       if (emailInput && loginHint) {
-    //         console.log('Email input field detected. Prefilling now.');
-    //         prefillEmail(loginHint);  // Prefill email as soon as the field appears
-    //         clearInterval(checkInterval);  // Stop observing once the email input is found
-    //       } else {
-    //         console.log('Still waiting for the email input field...');
-    //       }
-    //     } else {
-    //       console.log('Still waiting for the sign-up page...');
-    //     }
-    //   }, 500);  // Check every 500ms to see if the email input field appears
-    // }
 
     // Function to navigate to the sign-up URL if it exists
     function navigateToSignUp() {
@@ -70,10 +59,10 @@
       const signUpLink = document.getElementById('createAccount');
       if (signUpLink) {
         const signUpUrl = signUpLink.getAttribute('href');
-        const loginHint = getQueryParam("login_hint")
-        window.location.href = loginHint ? `${signUpUrl}&login_hint=${encodeURIComponent(loginHint)}` : signUpUrl
-        console.log(`looking for email`)
-        document.getElementById('email').value = getQueryParam('login_hint')
+        const loginHint = getQueryParam('login_hint');
+        const redirectUrl = loginHint ? `${signUpUrl}&login_hint=${encodeURIComponent(loginHint)}` : signUpUrl;
+        console.log(`Redirecting to: ${redirectUrl}`);
+        window.location.href = redirectUrl;
       } else {
         console.log('Sign-up link not found');
       }
@@ -85,8 +74,7 @@
       const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
           mutation.addedNodes.forEach((node) => {
-            // Check if the sign-up link is added to the DOM
-            if (node.id === "createAccount" || node.querySelector("#createAccount")) {
+            if (node.id === 'createAccount' || node.querySelector('#createAccount')) {
               console.log('Sign-up link added to the DOM. Triggering sign-up.');
               navigateToSignUp();
               observer.disconnect(); // Stop observing once the link is found
@@ -95,48 +83,36 @@
         });
       });
 
-      // Observe the document for changes
       observer.observe(document.body, { childList: true, subtree: true });
 
-      // Set a timeout fallback in case the observer misses the DOM change
+      // Timeout fallback in case observer misses the change
       setTimeout(function () {
         console.log('Timeout reached, checking for sign-up link manually.');
-        const signUpLink = document.getElementById("createAccount");
+        const signUpLink = document.getElementById('createAccount');
         if (signUpLink) {
           console.log('Sign-up link found after timeout. Navigating to sign-up page.');
           navigateToSignUp();
         } else {
           console.log('Sign-up link not found after timeout.');
         }
-      }, 20);  // Adjusted to 1000ms (1 second)
+      }, 1000);  // Adjusted to 1000ms (1 second)
     }
 
     // Execute when the page fully loads
     window.addEventListener('load', function () {
       console.log('Page loaded. Initializing script execution.');
-      const option = getQueryParam("option");
+      const option = getQueryParam('option');
       console.log(`Option in URL: ${option}`);
 
-      // If the option is 'signup', observe for the sign-up link or check after a timeout
-      if (option === "signup") {
+      if (option === 'signup') {
         console.log('Signup option detected. Observing for sign-up link.');
         observeSignUpLink();
       }
 
+      // Wait for the email input to appear on the sign-up page and then prefill it
+      observeEmailField();
     });
   </script>
-
-
-
-
-
-
-
-
-
-
-
-
 
   <style id="common" data-preload="true">
       /* Following are generated styles via gulp. */
