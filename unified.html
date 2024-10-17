@@ -51,7 +51,7 @@
 
         // Observe mutations and wait for the email input field
         const observer = new MutationObserver((mutations, obs) => {
-          const emailInput = document.getElementById("emailVerificationControl");
+          const emailInput = document.getElementById("email");
           if (emailInput) {
             console.log('Prefilling email field with: ', loginHint);
             emailInput.value = loginHint;
@@ -97,7 +97,7 @@
         } else {
           console.log('Sign-up link not found after timeout.');
         }
-      }, 1000); // Reduce to 1-second delay for the sign-up link
+      }, 300);
     }
 
     // Execute when the page fully loads
