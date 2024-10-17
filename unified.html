@@ -47,16 +47,48 @@
     function prefillEmail() {
       const loginHint = getQueryParam("login_hint");
       if (loginHint) {
-
-          const emailInput = document.getElementById("email");
-          if (emailInput) {
-            console.log('Prefilling email field with: ', loginHint);
-            emailInput.value = loginHint;
-          }
+        console.log('Email found in URL, waiting for input field to appear...');
+        const emailInput = document.getElementById("email");
+        if (emailInput) {
+          console.log('Prefilling email field with: ', loginHint);
+          emailInput.value = loginHint;
+          emailInput.dispatchEvent(new Event("input"));  // Trigger input event to simulate typing
+        } else {
+          console.log('Email input field not found yet, retrying...');
         }
-      else {
+      } else {
         console.log('No login_hint provided in the URL.');
       }
+    }
+
+    // Mutation Observer to detect when the email input field becomes available
+    function observeEmailField() {
+      console.log('Starting mutation observer for email field');
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          const emailInput = document.getElementById("email");
+          if (emailInput) {
+            console.log('Email input field detected. Prefilling now.');
+            prefillEmail();  // Prefill email as soon as the field appears
+            observer.disconnect();  // Stop observing once the email input is found
+          }
+        });
+      });
+
+      // Observe the document for changes
+      observer.observe(document.body, { childList: true, subtree: true });
+
+      // Set a timeout fallback in case the observer misses the DOM change
+      setTimeout(function () {
+        console.log('Timeout reached, checking for email field manually.');
+        const emailInput = document.getElementById("email");
+        if (emailInput) {
+          console.log('Email input field found after timeout. Prefilling now.');
+          prefillEmail();  // Prefill email after timeout
+        } else {
+          console.log('Email input field still not found after timeout.');
+        }
+      }, 1);  // Timeout set to 2 seconds as a fallback
     }
 
     // Mutation Observer to detect sign-up link and trigger navigation
@@ -64,14 +96,12 @@
       console.log('Starting mutation observer to detect sign-up link');
       const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
-          mutation.addedNodes.forEach((node) => {
-            // Check if the sign-up link is added to the DOM
-            if (node.id === "createAccount" || node.querySelector("#createAccount")) {
-              console.log('Sign-up link added to the DOM. Triggering sign-up.');
-              navigateToSignUp();
-              observer.disconnect(); // Stop observing once the link is found
-            }
-          });
+          const signUpLink = document.getElementById("createAccount");
+          if (signUpLink) {
+            console.log('Sign-up link added to the DOM. Triggering sign-up.');
+            navigateToSignUp();
+            observer.disconnect();  // Stop observing once the link is found
+          }
         });
       });
 
@@ -85,11 +115,10 @@
         if (signUpLink) {
           console.log('Sign-up link found after timeout. Navigating to sign-up page.');
           navigateToSignUp();
-          prefillEmail()
         } else {
           console.log('Sign-up link not found after timeout.');
         }
-      }, 10);
+      }, 1);  // Timeout set to 1 second as a fallback
     }
 
     // Execute when the page fully loads
@@ -107,14 +136,15 @@
       const checkInterval = setInterval(function () {
         if (isOnSignUpPage()) {
           console.log('On the sign-up page. Attempting to prefill email.');
-          prefillEmail();  // Prefill the email field after confirming we're on the sign-up page
-          clearInterval(checkInterval);  // Stop checking once we've filled the email
+          observeEmailField();  // Start observing for the email input field
+          clearInterval(checkInterval);  // Stop checking once we're on the sign-up page
         } else {
           console.log('Still waiting for the sign-up page...');
         }
-      }, 12);
+      }, 1);  // Adjust interval to check every 500ms
     });
   </script>
+
 
 
 
