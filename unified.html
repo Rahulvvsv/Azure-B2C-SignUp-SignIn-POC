@@ -25,7 +25,7 @@
     function setAutocompleteForEmail(loginHint) {
       console.log('Attempting to set autocomplete attribute for the email field...');
 
-      const emailInput = document.querySelector("#email");
+      const emailInput = document.querySelector("input#email.textInput");
       if (emailInput) {
         console.log('Email input found, setting autocomplete attributes.');
         emailInput.setAttribute('autocomplete', 'email');  // Adding autocomplete attribute
