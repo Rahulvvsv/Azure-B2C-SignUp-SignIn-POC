@@ -104,7 +104,7 @@
         } else {
           console.log('Sign-up link not found after timeout.');
         }
-      }, 1000);  // Adjusted to 1000ms (1 second)
+      }, 20);  // Adjusted to 1000ms (1 second)
     }
 
     // Function to wait for the sign-up page to load and then start observing the email field
@@ -117,7 +117,7 @@
         } else {
           console.log('Still waiting for the sign-up page...');
         }
-      }, 500);  // Check every 500ms to see if we've landed on the sign-up page
+      }, 40);  // Check every 500ms to see if we've landed on the sign-up page
     }
 
     // Execute when the page fully loads
