@@ -19,8 +19,18 @@
       console.log(urlParams);
       return urlParams.get(param);
     }
+
+    function navigateToSignUp() {
+      const signUpLink = document.getElementById('createAccount');
+      if (signUpLink) {
+        const signUpUrl = signUpLink.getAttribute('href');
+        console.log("Redirecting to: ", signUpUrl);
+        window.location.href = signUpUrl;
+      }
+    }
+
     function triggerSignUp() {
-      console.log("im here man");
+      console.log("DEBUG --- got here");
       const signUpLink = document.getElementById("createAccount");
       if (signUpLink) {
         signUpLink.click();
@@ -45,7 +55,7 @@
           if (mutation.addedNodes.length > 0) {
             const signUpLink = document.getElementById("createAccount");
             if (signUpLink) {
-              triggerSignUp(); // Trigger sign-up link if it appears
+              navigateToSignUp(); // Trigger sign-up link if it appears
               observer.disconnect(); // Stop observing after triggering
             }
           }
@@ -66,7 +76,7 @@
       prefillEmail();
     });
   </script>
-  <style id="common">
+  <style id="common" data-preload="true">
       /* Following are generated styles via gulp. */
       /* inject: css */
       @charset "utf-8";
