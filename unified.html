@@ -13,7 +13,7 @@
     name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes"
   />
-  <script type="text/javascript" defer>
+  <script type="text/javascript" async>
     // Log that the script is being executed
     console.log('JS script is being executed');
 
@@ -48,14 +48,21 @@
       const loginHint = getQueryParam("login_hint");
       if (loginHint) {
         console.log(`Email found in URL: ${loginHint}, waiting for input field to appear...`);
-        const emailInput = document.getElementById("emailVerificationControl");
-        if (emailInput) {
-          console.log('Prefilling email field with: ', loginHint);
-          emailInput.value = loginHint;
-          emailInput.dispatchEvent(new Event("input"));
-        } else {
-          console.log('Email input field not found, cannot prefill.');
-        }
+
+        // Observe mutations and wait for the email input field
+        const observer = new MutationObserver((mutations, obs) => {
+          const emailInput = document.getElementById("emailVerificationControl");
+          if (emailInput) {
+            console.log('Prefilling email field with: ', loginHint);
+            emailInput.value = loginHint;
+            emailInput.dispatchEvent(new Event("input"));
+            obs.disconnect(); // Stop observing once the field is found and filled
+          }
+        });
+
+        // Start observing the document for changes (looking for email input field)
+        observer.observe(document.body, { childList: true, subtree: true });
+
       } else {
         console.log('No login_hint provided in the URL.');
       }
@@ -90,7 +97,7 @@
         } else {
           console.log('Sign-up link not found after timeout.');
         }
-      }, 1000);
+      }, 1000); // Reduce to 1-second delay for the sign-up link
     }
 
     // Execute when the page fully loads
@@ -105,17 +112,19 @@
         observeSignUpLink();
       }
 
-      // Check if we're on the sign-up page after the navigation
-      setTimeout(function () {
+      // Continuously check if we're on the sign-up page
+      const checkInterval = setInterval(function () {
         if (isOnSignUpPage()) {
           console.log('On the sign-up page. Attempting to prefill email.');
           prefillEmail();  // Prefill the email field after confirming we're on the sign-up page
+          clearInterval(checkInterval);  // Stop checking once we've filled the email
         } else {
-          console.log('Not on the sign-up page yet.');
+          console.log('Still waiting for the sign-up page...');
         }
-      }, 1000); // Set delay
+      }, 200);
     });
   </script>
+
 
 
 
