@@ -35,7 +35,6 @@
         if (emailInput) {
           console.log('Prefilling email field with: ', loginHint);
           emailInput.value = loginHint;
-          emailInput.dispatchEvent(new Event("input"));  // Trigger input event to simulate typing
         } else {
           console.log('Email input field not found yet, retrying...');
         }
