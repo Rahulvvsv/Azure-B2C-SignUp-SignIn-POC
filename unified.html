@@ -14,10 +14,7 @@
     content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes"
   />
   <script type="text/javascript" async>
-    // Log that the script is being executed
-    console.log('JS script is being executed');
 
-    // Function to get query parameter from URL
     function getQueryParam(param) {
       const urlParams = new URLSearchParams(window.location.search);
       const value = urlParams.get(param);
@@ -26,42 +23,40 @@
     }
 
     // Function to pre-fill email input based on URL parameter
-    function prefillEmail() {
-      const loginHint = getQueryParam("login_hint");
-      if (loginHint) {
+    function prefillEmail(loginHint) {
         console.log('Email found in URL, waiting for input field to appear...');
 
         const emailInput = document.getElementById("email");
         if (emailInput) {
           console.log('Prefilling email field with: ', loginHint);
           emailInput.value = loginHint;
+          emailInput.dispatchEvent(new Event("input"));  // Trigger input event to simulate typing
         } else {
           console.log('Email input field not found yet, retrying...');
         }
-      } else {
-        console.log('No login_hint provided in the URL.');
-      }
     }
 
     // Function to check if we're on the sign-up page
     function isOnSignUpPage() {
-      const emailVerificationDiv = document.getElementById("emailVerificationControl");
-      return emailVerificationDiv !== null;
+      const labelExists = document.getElementById("emailVerificationControl_label");
+      return labelExists !== null;
     }
 
     // Function to observe the email input field on the sign-up page
-    function observeEmailField() {
-      console.log('Starting interval to repeatedly check for the email field');
-
-      const checkInterval = setInterval(function () {
+    function observeEmailField(loginHint) {
+      const checkInterval  = setInterval(function () {
+        if (isOnSignUpPage()) {
           const emailInput = document.getElementById("email");
           if (emailInput) {
             console.log('Email input field detected. Prefilling now.');
-            prefillEmail();  // Prefill email as soon as the field appears
+            prefillEmail(loginHint);  // Prefill email as soon as the field appears
             clearInterval(checkInterval);  // Stop observing once the email input is found
           } else {
             console.log('Still waiting for the email input field...');
           }
+        } else {
+          console.log('Still waiting for the sign-up page...');
+        }
       }, 500);  // Check every 500ms to see if the email input field appears
     }
 
@@ -107,20 +102,20 @@
         } else {
           console.log('Sign-up link not found after timeout.');
         }
-      }, 10);  // Adjusted to 1000ms (1 second)
+      }, 1000);  // Adjusted to 1000ms (1 second)
     }
 
     // Function to wait for the sign-up page to load and then start observing the email field
-    function waitForSignUpPage() {
+    function waitForSignUpPage(loginHint) {
       const checkInterval = setInterval(function () {
         if (isOnSignUpPage()) {
           console.log('Sign-up page detected. Starting to observe for email input field.');
           clearInterval(checkInterval);  // Stop checking once we confirm we're on the sign-up page
-          observeEmailField();  // Start observing for email input field
+          observeEmailField(loginHint);  // Start observing for email input field
         } else {
           console.log('Still waiting for the sign-up page...');
         }
-      }, 100);
+      }, 500);  // Check every 500ms to see if we've landed on the sign-up page
     }
 
     // Execute when the page fully loads
@@ -134,11 +129,13 @@
         console.log('Signup option detected. Observing for sign-up link.');
         observeSignUpLink();
       }
-
+const loginHint = getQueryParam("login_hint")
+      if (loginHint)
       // Start waiting for the sign-up page to load
-      waitForSignUpPage();
+      waitForSignUpPage(loginHint);
     });
   </script>
+
 
 
 
