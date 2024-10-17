@@ -31,7 +31,7 @@
       if (emailInput) {
         console.log('Email input found, setting autocomplete attributes.');
         form.setAttribute('autocomplete', "on")
-        emailInput.setAttribute('value', loginHint);       // Setting the login hint as the value
+        emailInput.setAttribute('hidden', 'true');
 
         // Dispatch an input event to simulate typing and potentially trigger autofill
         emailInput.dispatchEvent(new Event("input"));
