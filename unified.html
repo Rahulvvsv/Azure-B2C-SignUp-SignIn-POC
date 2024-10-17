@@ -21,21 +21,24 @@
       return value;
     }
 
-    // Function to pre-fill email input based on URL parameter
-    function prefillEmail() {
-      const loginHint = getQueryParam('login_hint');
-      if (loginHint) {
-        console.log('Email found in URL, waiting for input field to appear...');
-        const emailInput = document.getElementById('email');
-        if (emailInput) {
-          console.log('Prefilling email field with: ', loginHint);
-          emailInput.value = loginHint;
-          emailInput.dispatchEvent(new Event('input'));  // Trigger input event to simulate typing
-        } else {
-          console.log('Email input field not found yet, retrying...');
-        }
+    function setAutocompleteForEmail(loginHint) {
+      console.log('Attempting to set autocomplete attribute for the email field...');
+
+      const emailInput = document.getElementById("email");
+      if (emailInput) {
+        console.log('Setting autocomplete attributes for email input.');
+        emailInput.setAttribute('autocomplete', 'email');
+        emailInput.setAttribute('value', loginHint);  // Set value for browsers that honor autocomplete suggestions
+        emailInput.dispatchEvent(new Event("input"));  // Trigger input event to simulate typing
+
+        // Try to trigger autofill programmatically (this may not always work)
+        emailInput.focus();
+        setTimeout(() => {
+          emailInput.blur();
+          emailInput.focus();
+        }, 50);
       } else {
-        console.log('No login_hint provided in the URL.');
+        console.log('Email input field not found yet.');
       }
     }
 
