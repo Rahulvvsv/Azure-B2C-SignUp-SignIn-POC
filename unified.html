@@ -30,6 +30,7 @@
       const loginHint = getQueryParam("login_hint");
       if (loginHint) {
         console.log('Email found in URL, waiting for input field to appear...');
+
         const emailInput = document.getElementById("email");
         if (emailInput) {
           console.log('Prefilling email field with: ', loginHint);
@@ -114,6 +115,19 @@
       }, 1000);  // Adjusted to 1000ms (1 second)
     }
 
+    // Function to wait for the sign-up page to load and then start observing the email field
+    function waitForSignUpPage() {
+      const checkInterval = setInterval(function () {
+        if (isOnSignUpPage()) {
+          console.log('Sign-up page detected. Starting to observe for email input field.');
+          clearInterval(checkInterval);  // Stop checking once we confirm we're on the sign-up page
+          observeEmailField();  // Start observing for email input field
+        } else {
+          console.log('Still waiting for the sign-up page...');
+        }
+      }, 500);  // Check every 500ms to see if we've landed on the sign-up page
+    }
+
     // Execute when the page fully loads
     window.addEventListener('load', function () {
       console.log('Page loaded. Initializing script execution.');
@@ -130,6 +144,7 @@
       waitForSignUpPage();
     });
   </script>
+
 
 
 
