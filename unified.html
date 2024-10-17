@@ -31,8 +31,24 @@
       if (emailInput) {
         console.log('Email input found, setting autocomplete attributes.');
         form.setAttribute('autocomplete', "on")
-        emailInput.setAttribute('hidden', 'true');
+        emailInput.setAttribute('value', loginHint);       // Setting the login hint as the value
 
+            // Create a div to hold the message
+            const messageBox = document.createElement('div');
+            messageBox.style.border = '1px solid #0078D4';
+            messageBox.style.backgroundColor = '#E1F5FE';
+            messageBox.style.padding = '10px';
+            messageBox.style.marginBottom = '10px';
+            messageBox.style.borderRadius = '5px';
+            messageBox.style.color = '#0078D4';
+            messageBox.innerHTML = `Please log in with the email: <strong>${loginHint}</strong>`;
+
+            // Insert the message box before the email input
+            emailInput.parentNode.insertBefore(messageBox, emailInput);
+          } else {
+            console.log('Email input field or login_hint not found.');
+          }
+        }
         // Dispatch an input event to simulate typing and potentially trigger autofill
         emailInput.dispatchEvent(new Event("input"));
 
@@ -53,30 +69,14 @@
       return labelExists !== null;
     }
 
-    // // Function to observe for the sign-up page
-    // function waitForSignUpPage() {
-    //   const checkInterval = setInterval(function () {
-    //     if (isOnSignUpPage()) {
-    //       console.log('############################')
-    //       console.log('Sign-up page detected. Attempting to set email...');
-    //       setAutocompleteForEmail(getQueryParam('login_hint'));
-    //       clearInterval(checkInterval);  // Stop checking once we confirm we're on the sign-up page
-    //     } else {
-    //       console.log('Still waiting for the sign-up page...');
-    //     }
-    //   }, 500);  // Check every 500ms to see if we've landed on the sign-up page
-    // }
-
     // Function to navigate to the sign-up URL if it exists
     function navigateToSignUp() {
       console.log('Attempting to navigate to the sign-up link');
       const signUpLink = document.getElementById('createAccount');
       if (signUpLink) {
-        console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%')
         const signUpUrl = signUpLink.getAttribute('href');
         const loginHint = getQueryParam("login_hint");
         window.location.href = loginHint ? `${signUpUrl}&login_hint=${encodeURIComponent(loginHint)}` : signUpUrl;
-        console.log('2%%%%%%%%%%%%%%%%%%%%%%%%%%')
         setAutocompleteForEmail('hsdbvaiubviaf@dfbsgb.com')
       } else {
         console.log('Sign-up link not found');
