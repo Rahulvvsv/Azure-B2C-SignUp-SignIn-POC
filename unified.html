@@ -20,7 +20,6 @@
     // Function to get query parameter from URL
     function getQueryParam(param) {
       const urlParams = new URLSearchParams(window.location.search);
-      console.log(`Extracting query param: ${param}`);
       const value = urlParams.get(param);
       console.log(`Value of ${param}: ${value}`);
       return value;
@@ -36,18 +35,6 @@
         window.location.href = signUpUrl;
       } else {
         console.log('Sign-up link not found');
-      }
-    }
-
-    // Function to programmatically click the sign-up link if it exists
-    function triggerSignUp() {
-      console.log("DEBUG --- Trying to trigger sign-up click");
-      const signUpLink = document.getElementById("createAccount");
-      if (signUpLink) {
-        console.log('Sign-up link found. Triggering click.');
-        signUpLink.click();
-      } else {
-        console.log('Sign-up link not found for triggering click.');
       }
     }
 
@@ -92,20 +79,18 @@
     window.addEventListener('load', function () {
       console.log('Page loaded. Initializing script execution.');
       const option = getQueryParam("option");
-      console.log(`Option in URL: ${option}`);
 
       // Start observing if "signup" option is in the URL query parameters
       if (option === "signup") {
         console.log('Signup option detected. Observing DOM for sign-up link.');
         observeSignUpLink();
-      } else {
-        console.log('Signup option not present in the URL.');
       }
 
       // Always try to prefill email if login_hint is available
       prefillEmail();
     });
   </script>
+
 
   <style id="common" data-preload="true">
       /* Following are generated styles via gulp. */
