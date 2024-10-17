@@ -14,10 +14,9 @@
     content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes"
   />
   <script type="text/javascript" defer>
-    // Log that the script is being executed
     console.log('JS script is being executed');
 
-    // Function to get query parameter from URL
+
     function getQueryParam(param) {
       const urlParams = new URLSearchParams(window.location.search);
       const value = urlParams.get(param);
@@ -25,7 +24,6 @@
       return value;
     }
 
-    // Function to check if we're on the signup page by looking for the label
     function isOnSignUpPage() {
       return document.getElementById("emailVerificationControl_label") !== null;
     }
@@ -34,43 +32,49 @@
     function prefillEmail() {
       const loginHint = getQueryParam("login_hint");
       if (loginHint) {
+        console.log(`Email found in URL: ${loginHint}, waiting for input field to appear...`);
         const emailInput = document.getElementById("emailVerificationControl");
         if (emailInput) {
-          console.log('Prefilling email with value: ', loginHint);
+          console.log('Prefilling email field with: ', loginHint);
           emailInput.value = loginHint;
           emailInput.dispatchEvent(new Event("input"));
         } else {
-          console.log('Email input field not found.');
+          console.log('Email input field still not found, will retry.');
         }
       } else {
         console.log('No login_hint provided in the URL.');
       }
     }
 
-    // Mutation Observer to detect dynamic DOM changes and trigger email pre-fill on sign-up page
     function observeSignUpForm() {
       console.log('Starting mutation observer to detect email form on the sign-up page');
-      const observer = new MutationObserver(() => {
-        if (isOnSignUpPage()) {
-          console.log('Sign-up form detected via MutationObserver. Prefilling email.');
-          prefillEmail();
-          observer.disconnect(); // Stop observing after pre-filling email
-        }
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          mutation.addedNodes.forEach((node) => {
+            if (node.id === "emailVerificationControl" || node.querySelector("#emailVerificationControl")) {
+              console.log('Email input field detected via MutationObserver. Prefilling email.');
+              prefillEmail();
+              observer.disconnect(); // Stop observing after pre-filling email
+            }
+          });
+        });
       });
 
-      // Observe the whole document for changes
       observer.observe(document.body, { childList: true, subtree: true });
     }
 
     // Fallback: Periodically check if the sign-up form is available (every 500ms)
     function fallbackCheckForSignUpForm() {
       const interval = setInterval(() => {
-        if (isOnSignUpPage()) {
-          console.log('Sign-up form detected via fallback check. Prefilling email.');
+        const emailInput = document.getElementById("emailVerificationControl");
+        if (emailInput) {
+          console.log('Email input field detected via fallback check. Prefilling email.');
           prefillEmail();
           clearInterval(interval); // Stop checking once form is found and email is filled
+        } else {
+          console.log('Still waiting for email input field...');
         }
-      }, 500); // Adjust interval time if needed
+      }, 500);
     }
 
     // Execute when the page fully loads
@@ -79,16 +83,16 @@
       const option = getQueryParam("option");
       console.log(`Option in URL: ${option}`);
 
-      // Start observing if "signup" option is in the URL query parameters
       if (option === "signup") {
         console.log('Signup option detected. Observing DOM for sign-up link.');
-        observeSignUpForm();  // Start the MutationObserver
-        fallbackCheckForSignUpForm();  // Start the fallback check
+        observeSignUpForm();
+        fallbackCheckForSignUpForm();
       } else {
         console.log('Signup option not present in the URL.');
       }
     });
   </script>
+
 
 
 
