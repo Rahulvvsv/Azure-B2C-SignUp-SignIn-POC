@@ -44,11 +44,12 @@
 
     // Function to observe the email input field on the sign-up page
     function observeEmailField() {
-      const loginHint = getQueryParam('login_hint') || ""
+      const loginHint = getQueryParam('login_hint')
+      console.log('login hint:', loginHint)
       const checkInterval  = setInterval(function () {
         if (isOnSignUpPage()) {
-          const emailInput = document.getElementById("email");
-          if (emailInput) {
+          const emailInput = document.getElementById("#email");
+          if (emailInput && loginHint) {
             console.log('Email input field detected. Prefilling now.');
             prefillEmail(loginHint);  // Prefill email as soon as the field appears
             clearInterval(checkInterval);  // Stop observing once the email input is found
@@ -123,7 +124,6 @@
     window.addEventListener('load', function () {
       console.log('Page loaded. Initializing script execution.');
       const option = getQueryParam("option");
-      const loginHint = getQueryParam("login_hint");
       console.log(`Option in URL: ${option}`);
 
       // If the option is 'signup', observe for the sign-up link or check after a timeout
@@ -132,7 +132,7 @@
         observeSignUpLink();
       }
 
-      waitForSignUpPage(loginHint);
+      waitForSignUpPage();
     });
   </script>
 
