@@ -25,21 +25,23 @@
     function setAutocompleteForEmail(loginHint) {
       console.log('Attempting to set autocomplete attribute for the email field...');
 
-      const emailInput = document.getElementById("email");
+      const emailInput = document.querySelector("#email");
       if (emailInput) {
-        console.log('Setting autocomplete attributes for email input.');
-        emailInput.setAttribute('autocomplete', 'email');
-        emailInput.setAttribute('value', loginHint);  // Set value for browsers that honor autocomplete suggestions
-        emailInput.dispatchEvent(new Event("input"));  // Trigger input event to simulate typing
+        console.log('Email input found, setting autocomplete attributes.');
+        emailInput.setAttribute('autocomplete', 'email');  // Adding autocomplete attribute
+        emailInput.setAttribute('value', loginHint);       // Setting the login hint as the value
 
-        // Try to trigger autofill programmatically (this may not always work)
+        // Dispatch an input event to simulate typing and potentially trigger autofill
+        emailInput.dispatchEvent(new Event("input"));
+
+        // Try to trigger autofill by focusing and then blurring the input
         emailInput.focus();
         setTimeout(() => {
           emailInput.blur();
           emailInput.focus();
         }, 50);
       } else {
-        console.log('Email input field not found yet.');
+        console.log('Email input field not found yet. Retrying...');
       }
     }
 
@@ -52,8 +54,8 @@
     // Function to observe the email input field on the sign-up page
     function observeEmailField() {
       const loginHint = getQueryParam('login_hint');
-      console.log('login hint:', loginHint);
-      const checkInterval  = setInterval(function () {
+      console.log('Login hint:', loginHint);
+      const checkInterval = setInterval(function () {
         if (isOnSignUpPage()) {
           const emailInput = document.querySelector("#email");
           if (emailInput && loginHint) {
@@ -92,6 +94,7 @@
       waitForSignUpPage();
     });
   </script>
+
 
 
   <style id="common" data-preload="true">
