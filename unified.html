@@ -14,71 +14,99 @@
     content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes"
   />
   <script type="text/javascript" defer>
-    console.log('JS script being run')
+    // Log that the script is being executed
+    console.log('JS script is being executed');
+
+    // Function to get query parameter from URL
     function getQueryParam(param) {
       const urlParams = new URLSearchParams(window.location.search);
-      console.log(urlParams);
-      return urlParams.get(param);
+      console.log(`Extracting query param: ${param}`);
+      const value = urlParams.get(param);
+      console.log(`Value of ${param}: ${value}`);
+      return value;
     }
 
+    // Function to navigate to the sign-up URL if it exists
     function navigateToSignUp() {
-      console.log('getting signup link')
+      console.log('Attempting to navigate to the sign-up link');
       const signUpLink = document.getElementById('createAccount');
       if (signUpLink) {
         const signUpUrl = signUpLink.getAttribute('href');
-        console.log("Redirecting to: ", signUpUrl);
+        console.log("Redirecting to sign-up URL: ", signUpUrl);
         window.location.href = signUpUrl;
+      } else {
+        console.log('Sign-up link not found');
       }
     }
 
+    // Function to programmatically click the sign-up link if it exists
     function triggerSignUp() {
-      console.log("DEBUG --- got here");
+      console.log("DEBUG --- Trying to trigger sign-up click");
       const signUpLink = document.getElementById("createAccount");
       if (signUpLink) {
+        console.log('Sign-up link found. Triggering click.');
         signUpLink.click();
+      } else {
+        console.log('Sign-up link not found for triggering click.');
       }
     }
 
+    // Function to pre-fill email input based on URL parameter
     function prefillEmail() {
       const loginHint = getQueryParam("login_hint");
       if (loginHint) {
         const emailInput = document.getElementById("email");
         if (emailInput) {
+          console.log('Prefilling email with value: ', loginHint);
           emailInput.value = loginHint;
           emailInput.dispatchEvent(new Event("input"));
+        } else {
+          console.log('Email input field not found.');
         }
+      } else {
+        console.log('No login_hint provided in the URL.');
       }
     }
 
-    // Mutation Observer to trigger when #createAccount appears
+    // Mutation Observer to detect dynamic DOM changes and trigger sign-up link click
     function observeSignUpLink() {
+      console.log('Starting mutation observer to detect sign-up link');
       const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
-          if (mutation.addedNodes.length > 0) {
-            console.log('checking mutations')
-            const signUpLink = document.getElementById("createAccount");
-            if (signUpLink) {
-              navigateToSignUp(); // Trigger sign-up link if it appears
-              observer.disconnect(); // Stop observing after triggering
+          mutation.addedNodes.forEach((node) => {
+            // Check if the sign-up link is added to the DOM
+            if (node.id === "createAccount" || node.querySelector("#createAccount")) {
+              console.log('Sign-up link added to the DOM. Triggering sign-up.');
+              navigateToSignUp();
+              observer.disconnect();
             }
-          }
+          });
         });
       });
 
-      // Start observing the document for changes
+      // Observe the whole document for changes
       observer.observe(document.body, { childList: true, subtree: true });
     }
 
-    // Execute when the page loads
+    // Execute when the page fully loads
     window.addEventListener('load', function () {
+      console.log('Page loaded. Initializing script execution.');
       const option = getQueryParam("option");
-      console.log(option);
+      console.log(`Option in URL: ${option}`);
+
+      // Start observing if "signup" option is in the URL query parameters
       if (option === "signup") {
-        observeSignUpLink(); // Start observing if "signup" is in the URL
+        console.log('Signup option detected. Observing DOM for sign-up link.');
+        observeSignUpLink();
+      } else {
+        console.log('Signup option not present in the URL.');
       }
+
+      // Always try to prefill email if login_hint is available
       prefillEmail();
     });
   </script>
+
   <style id="common" data-preload="true">
       /* Following are generated styles via gulp. */
       /* inject: css */
