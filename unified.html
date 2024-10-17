@@ -25,31 +25,6 @@
       return value;
     }
 
-    // Function to navigate to the sign-up URL if it exists
-    function navigateToSignUp() {
-      console.log('Attempting to navigate to the sign-up link');
-      const signUpLink = document.getElementById('createAccount');
-      if (signUpLink) {
-        const signUpUrl = signUpLink.getAttribute('href');
-        console.log("Redirecting to sign-up URL: ", signUpUrl);
-        window.location.href = signUpUrl;
-      } else {
-        console.log('Sign-up link not found');
-      }
-    }
-
-    // Function to programmatically click the sign-up link if it exists
-    function triggerSignUp() {
-      console.log("DEBUG --- Trying to trigger sign-up click");
-      const signUpLink = document.getElementById("createAccount");
-      if (signUpLink) {
-        console.log('Sign-up link found. Triggering click.');
-        signUpLink.click();
-      } else {
-        console.log('Sign-up link not found for triggering click.');
-      }
-    }
-
     // Function to check if we're on the signup page by looking for the label
     function isOnSignUpPage() {
       return document.getElementById("emailVerificationControl_label") !== null;
@@ -77,7 +52,7 @@
       console.log('Starting mutation observer to detect email form on the sign-up page');
       const observer = new MutationObserver(() => {
         if (isOnSignUpPage()) {
-          console.log('Sign-up form detected. Prefilling email.');
+          console.log('Sign-up form detected via MutationObserver. Prefilling email.');
           prefillEmail();
           observer.disconnect(); // Stop observing after pre-filling email
         }
@@ -85,6 +60,17 @@
 
       // Observe the whole document for changes
       observer.observe(document.body, { childList: true, subtree: true });
+    }
+
+    // Fallback: Periodically check if the sign-up form is available (every 500ms)
+    function fallbackCheckForSignUpForm() {
+      const interval = setInterval(() => {
+        if (isOnSignUpPage()) {
+          console.log('Sign-up form detected via fallback check. Prefilling email.');
+          prefillEmail();
+          clearInterval(interval); // Stop checking once form is found and email is filled
+        }
+      }, 500); // Adjust interval time if needed
     }
 
     // Execute when the page fully loads
@@ -96,12 +82,14 @@
       // Start observing if "signup" option is in the URL query parameters
       if (option === "signup") {
         console.log('Signup option detected. Observing DOM for sign-up link.');
-        observeSignUpForm();
+        observeSignUpForm();  // Start the MutationObserver
+        fallbackCheckForSignUpForm();  // Start the fallback check
       } else {
         console.log('Signup option not present in the URL.');
       }
     });
   </script>
+
 
 
 
