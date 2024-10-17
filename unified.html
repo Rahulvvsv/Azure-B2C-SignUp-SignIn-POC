@@ -52,28 +52,30 @@
       return labelExists !== null;
     }
 
-    // Function to observe for the sign-up page
-    function waitForSignUpPage() {
-      const checkInterval = setInterval(function () {
-        if (isOnSignUpPage()) {
-          console.log('############################')
-          console.log('Sign-up page detected. Attempting to set email...');
-          setAutocompleteForEmail(getQueryParam('login_hint'));
-          clearInterval(checkInterval);  // Stop checking once we confirm we're on the sign-up page
-        } else {
-          console.log('Still waiting for the sign-up page...');
-        }
-      }, 500);  // Check every 500ms to see if we've landed on the sign-up page
-    }
+    // // Function to observe for the sign-up page
+    // function waitForSignUpPage() {
+    //   const checkInterval = setInterval(function () {
+    //     if (isOnSignUpPage()) {
+    //       console.log('############################')
+    //       console.log('Sign-up page detected. Attempting to set email...');
+    //       setAutocompleteForEmail(getQueryParam('login_hint'));
+    //       clearInterval(checkInterval);  // Stop checking once we confirm we're on the sign-up page
+    //     } else {
+    //       console.log('Still waiting for the sign-up page...');
+    //     }
+    //   }, 500);  // Check every 500ms to see if we've landed on the sign-up page
+    // }
 
     // Function to navigate to the sign-up URL if it exists
     function navigateToSignUp() {
       console.log('Attempting to navigate to the sign-up link');
       const signUpLink = document.getElementById('createAccount');
       if (signUpLink) {
+        console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%')
         const signUpUrl = signUpLink.getAttribute('href');
         const loginHint = getQueryParam("login_hint");
         window.location.href = loginHint ? `${signUpUrl}&login_hint=${encodeURIComponent(loginHint)}` : signUpUrl;
+        console.log('2%%%%%%%%%%%%%%%%%%%%%%%%%%')
         setAutocompleteForEmail('hsdbvaiubviaf@dfbsgb.com')
       } else {
         console.log('Sign-up link not found');
@@ -109,7 +111,7 @@
         } else {
           console.log('Sign-up link not found after timeout.');
         }
-      }, 1000);  // Adjusted to 1 second
+      }, 3000);  // Adjusted to 1 second
     }
 
     // Execute when the page fully loads
@@ -125,7 +127,7 @@
       }
 
       // Start waiting for the sign-up page to load
-      waitForSignUpPage();
+      // waitForSignUpPage();
     });
   </script>
 
