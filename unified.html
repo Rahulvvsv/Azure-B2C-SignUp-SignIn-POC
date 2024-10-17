@@ -25,29 +25,12 @@
       return value;
     }
 
-    // Function to navigate to the sign-up URL if it exists
-    function navigateToSignUp() {
-      console.log('Attempting to navigate to the sign-up link');
-      const signUpLink = document.getElementById('createAccount');
-      if (signUpLink) {
-        const signUpUrl = signUpLink.getAttribute('href');
-        console.log("Redirecting to sign-up URL: ", signUpUrl);
-        window.location.href = signUpUrl;
-      } else {
-        console.log('Sign-up link not found');
-      }
-    }
-
-    // Function to check if we're on the signup page by looking for a unique element (label)
-    function isOnSignUpPage() {
-      return document.getElementById("emailVerificationControl") !== null;
-    }
-
     // Function to pre-fill email input based on URL parameter
     function prefillEmail() {
       const loginHint = getQueryParam("login_hint");
       if (loginHint) {
         console.log('Email found in URL, waiting for input field to appear...');
+
         const emailInput = document.getElementById("email");
         if (emailInput) {
           console.log('Prefilling email field with: ', loginHint);
@@ -61,7 +44,13 @@
       }
     }
 
-    // Mutation Observer to detect when the email input field becomes available
+    // Function to check if we're on the sign-up page
+    function isOnSignUpPage() {
+      const labelExists = document.getElementById("emailVerificationControl_label");
+      return labelExists !== null;
+    }
+
+    // Function to observe the email input field on the sign-up page
     function observeEmailField() {
       console.log('Starting mutation observer for email field');
       const observer = new MutationObserver((mutations) => {
@@ -78,47 +67,43 @@
       // Observe the document for changes
       observer.observe(document.body, { childList: true, subtree: true });
 
-      // Set a timeout fallback in case the observer misses the DOM change
+      // Fallback timeout to manually check after some time if observer misses the DOM change
       setTimeout(function () {
         console.log('Timeout reached, checking for email field manually.');
         const emailInput = document.getElementById("email");
         if (emailInput) {
           console.log('Email input field found after timeout. Prefilling now.');
-          prefillEmail();  // Prefill email after timeout
+          prefillEmail();
         } else {
           console.log('Email input field still not found after timeout.');
         }
-      }, 1);  // Timeout set to 2 seconds as a fallback
+      }, 5);  // ms
     }
 
-    // Mutation Observer to detect sign-up link and trigger navigation
-    function observeSignUpLink() {
-      console.log('Starting mutation observer to detect sign-up link');
-      const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-          const signUpLink = document.getElementById("createAccount");
-          if (signUpLink) {
-            console.log('Sign-up link added to the DOM. Triggering sign-up.');
-            navigateToSignUp();
-            observer.disconnect();  // Stop observing once the link is found
-          }
-        });
-      });
-
-      // Observe the document for changes
-      observer.observe(document.body, { childList: true, subtree: true });
-
-      // Set a timeout fallback in case the observer misses the DOM change
-      setTimeout(function () {
-        console.log('Timeout reached, checking for sign-up link manually.');
-        const signUpLink = document.getElementById("createAccount");
-        if (signUpLink) {
-          console.log('Sign-up link found after timeout. Navigating to sign-up page.');
-          navigateToSignUp();
+    // Function to wait for the sign-up page to load and then start observing the email field
+    function waitForSignUpPage() {
+      const checkInterval = setInterval(function () {
+        if (isOnSignUpPage()) {
+          console.log('Sign-up page detected. Starting to observe for email input field.');
+          clearInterval(checkInterval);  // Stop checking once we confirm we're on the sign-up page
+          observeEmailField();  // Start observing for email input field
         } else {
-          console.log('Sign-up link not found after timeout.');
+          console.log('Still waiting for the sign-up page...');
         }
-      }, 1);  // Timeout set to 1 second as a fallback
+      }, 5);  // Check every 5ms to see if we've landed on the sign-up page
+    }
+
+    // Function to navigate to the sign-up URL if it exists
+    function navigateToSignUp() {
+      console.log('Attempting to navigate to the sign-up link');
+      const signUpLink = document.getElementById('createAccount');
+      if (signUpLink) {
+        const signUpUrl = signUpLink.getAttribute('href');
+        console.log("Redirecting to sign-up URL: ", signUpUrl);
+        window.location.href = signUpUrl;
+      } else {
+        console.log('Sign-up link not found');
+      }
     }
 
     // Execute when the page fully loads
@@ -133,17 +118,11 @@
         observeSignUpLink();
       }
 
-      const checkInterval = setInterval(function () {
-        if (isOnSignUpPage()) {
-          console.log('On the sign-up page. Attempting to prefill email.');
-          observeEmailField();  // Start observing for the email input field
-          clearInterval(checkInterval);  // Stop checking once we're on the sign-up page
-        } else {
-          console.log('Still waiting for the sign-up page...');
-        }
-      }, 1);  // Adjust interval to check every 500ms
+      // Start waiting for the sign-up page to load
+      waitForSignUpPage();
     });
   </script>
+
 
 
 
