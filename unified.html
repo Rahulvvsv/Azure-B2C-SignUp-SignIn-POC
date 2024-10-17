@@ -47,23 +47,14 @@
     function prefillEmail() {
       const loginHint = getQueryParam("login_hint");
       if (loginHint) {
-        console.log(`Email found in URL: ${loginHint}, waiting for input field to appear...`);
 
-        // Observe mutations and wait for the email input field
-        const observer = new MutationObserver((mutations, obs) => {
           const emailInput = document.getElementById("email");
           if (emailInput) {
             console.log('Prefilling email field with: ', loginHint);
             emailInput.value = loginHint;
-            emailInput.dispatchEvent(new Event("input"));
-            obs.disconnect(); // Stop observing once the field is found and filled
           }
-        });
-
-        // Start observing the document for changes (looking for email input field)
-        observer.observe(document.body, { childList: true, subtree: true });
-
-      } else {
+        }
+      else {
         console.log('No login_hint provided in the URL.');
       }
     }
