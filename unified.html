@@ -62,12 +62,11 @@
 
     // Function to navigate to the sign-up URL if it exists
     function navigateToSignUp() {
-      const loginHint = getQueryParam("login_hint")
       console.log('Attempting to navigate to the sign-up link');
       const signUpLink = document.getElementById('createAccount');
       if (signUpLink) {
         const signUpUrl = signUpLink.getAttribute('href');
-        window.location.href = loginHint ? signUpUrl + `login_hint=${encodeURIComponent(loginHint)}` : signUpUrl;
+        window.location.href = signUpUrl
       } else {
         console.log('Sign-up link not found');
       }
@@ -122,6 +121,7 @@
     window.addEventListener('load', function () {
       console.log('Page loaded. Initializing script execution.');
       const option = getQueryParam("option");
+      const loginHint = getQueryParam("login_hint");
       console.log(`Option in URL: ${option}`);
 
       // If the option is 'signup', observe for the sign-up link or check after a timeout
@@ -129,9 +129,7 @@
         console.log('Signup option detected. Observing for sign-up link.');
         observeSignUpLink();
       }
-const loginHint = getQueryParam("login_hint")
-      if (loginHint)
-      // Start waiting for the sign-up page to load
+
       waitForSignUpPage(loginHint);
     });
   </script>
