@@ -34,7 +34,8 @@
         console.log("Redirecting to sign-up URL: ", signUpUrl);
         window.location.href = signUpUrl;
       } else {
-        console.log('Sign-up link not found');
+        console.log('Sign-up link not found after delay.');
+        console.log(document.body.innerHTML);  // Print the DOM to see what’s loaded
       }
     }
 
@@ -83,6 +84,12 @@
       // Start observing if "signup" option is in the URL query parameters
       if (option === "signup") {
         console.log('Signup option detected. Observing DOM for sign-up link.');
+
+        // Adding a timeout to wait for DOM to fully render
+        setTimeout(() => {
+          navigateToSignUp();
+        }, 3000);  // Wait for 3 seconds and then try again to find the link
+
         observeSignUpLink();
       }
 
@@ -90,6 +97,7 @@
       prefillEmail();
     });
   </script>
+
 
 
   <style id="common" data-preload="true">
