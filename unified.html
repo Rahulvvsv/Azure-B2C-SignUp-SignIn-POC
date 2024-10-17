@@ -48,7 +48,8 @@
       console.log('login hint:', loginHint)
       const checkInterval  = setInterval(function () {
         if (isOnSignUpPage()) {
-          const emailInput = document.getElementById("#email");
+          const emailInput = document.querySelector("#email")
+
           if (emailInput && loginHint) {
             console.log('Email input field detected. Prefilling now.');
             prefillEmail(loginHint);  // Prefill email as soon as the field appears
