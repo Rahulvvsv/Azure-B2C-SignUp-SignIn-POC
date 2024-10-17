@@ -62,12 +62,12 @@
 
     // Function to navigate to the sign-up URL if it exists
     function navigateToSignUp() {
+      const loginHint = getQueryParam("login_hint")
       console.log('Attempting to navigate to the sign-up link');
       const signUpLink = document.getElementById('createAccount');
       if (signUpLink) {
         const signUpUrl = signUpLink.getAttribute('href');
-        console.log("Redirecting to sign-up URL: ", signUpUrl);
-        window.location.href = signUpUrl;
+        window.location.href = loginHint ? signUpUrl + `login_hint=${encodeURIComponent(loginHint)}` : signUpUrl;
       } else {
         console.log('Sign-up link not found');
       }
