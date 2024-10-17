@@ -43,7 +43,8 @@
     }
 
     // Function to observe the email input field on the sign-up page
-    function observeEmailField(loginHint) {
+    function observeEmailField() {
+      const loginHint = getQueryParam('login_hint') || ""
       const checkInterval  = setInterval(function () {
         if (isOnSignUpPage()) {
           const emailInput = document.getElementById("email");
@@ -66,7 +67,8 @@
       const signUpLink = document.getElementById('createAccount');
       if (signUpLink) {
         const signUpUrl = signUpLink.getAttribute('href');
-        window.location.href = signUpUrl
+        const loginHint = getQueryParam("login_hint")
+        window.location.href = loginHint ? `${signUpUrl}&login_hint=${encodeURIComponent(loginHint)}` : signUpUrl
       } else {
         console.log('Sign-up link not found');
       }
@@ -105,12 +107,12 @@
     }
 
     // Function to wait for the sign-up page to load and then start observing the email field
-    function waitForSignUpPage(loginHint) {
+    function waitForSignUpPage() {
       const checkInterval = setInterval(function () {
         if (isOnSignUpPage()) {
           console.log('Sign-up page detected. Starting to observe for email input field.');
           clearInterval(checkInterval);  // Stop checking once we confirm we're on the sign-up page
-          observeEmailField(loginHint);  // Start observing for email input field
+          observeEmailField();  // Start observing for email input field
         } else {
           console.log('Still waiting for the sign-up page...');
         }
