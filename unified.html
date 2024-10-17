@@ -89,7 +89,7 @@
         } else {
           console.log('Sign-up link not found after timeout.');
         }
-      }, 50);
+      }, 10);
     }
 
     // Execute when the page fully loads
@@ -104,16 +104,15 @@
         observeSignUpLink();
       }
 
-      // Continuously check if we're on the sign-up page
-      // const checkInterval = setInterval(function () {
-      //   if (isOnSignUpPage()) {
-      //     console.log('On the sign-up page. Attempting to prefill email.');
-      //     prefillEmail();  // Prefill the email field after confirming we're on the sign-up page
-      //     clearInterval(checkInterval);  // Stop checking once we've filled the email
-      //   } else {
-      //     console.log('Still waiting for the sign-up page...');
-      //   }
-      // }, 55);
+      const checkInterval = setInterval(function () {
+        if (isOnSignUpPage()) {
+          console.log('On the sign-up page. Attempting to prefill email.');
+          prefillEmail();  // Prefill the email field after confirming we're on the sign-up page
+          clearInterval(checkInterval);  // Stop checking once we've filled the email
+        } else {
+          console.log('Still waiting for the sign-up page...');
+        }
+      }, 12);
     });
   </script>
 
