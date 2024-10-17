@@ -34,23 +34,36 @@
         console.log("Redirecting to sign-up URL: ", signUpUrl);
         window.location.href = signUpUrl;
       } else {
-        console.log('Sign-up link not found after delay.');
-        console.log(document.body.innerHTML);  // Print the DOM to see what’s loaded
+        console.log('Sign-up link not found.');
       }
     }
 
-    // Function to pre-fill email input based on URL parameter
-    function prefillEmail() {
+    // Prefill email after navigating to the sign-up form
+    function prefillEmailAfterNavigation() {
       const loginHint = getQueryParam("login_hint");
       if (loginHint) {
-        const emailInput = document.getElementById("email");
-        if (emailInput) {
-          console.log('Prefilling email with value: ', loginHint);
-          emailInput.value = loginHint;
-          emailInput.dispatchEvent(new Event("input"));
-        } else {
-          console.log('Email input field not found.');
-        }
+        console.log('Email found in URL, waiting for input field to appear...');
+
+        // Mutation Observer to detect if we are on the sign-up page (only run after navigation)
+        const emailInputObserver = new MutationObserver((mutations) => {
+          mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+              // Make sure we're on the second page, not the first
+              if (document.querySelector("form") && document.querySelector("form").id === "signupForm") {
+                const emailInput = document.querySelector("#email");
+                if (emailInput) {
+                  console.log('Prefilling email with value: ', loginHint);
+                  emailInput.value = loginHint;
+                  emailInput.dispatchEvent(new Event("input"));
+                  emailInputObserver.disconnect();  // Stop observing once email is filled
+                }
+              }
+            });
+          });
+        });
+
+        // Observe for input elements to be added (or just observe the form)
+        emailInputObserver.observe(document.body, { childList: true, subtree: true });
       } else {
         console.log('No login_hint provided in the URL.');
       }
@@ -62,17 +75,17 @@
       const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
           mutation.addedNodes.forEach((node) => {
-            // Check if the sign-up link is added to the DOM
-            if (node.id === "createAccount" || node.querySelector("#createAccount")) {
-              console.log('Sign-up link added to the DOM. Triggering sign-up.');
+            const signUpLink = document.getElementById("createAccount");
+            if (signUpLink) {
+              console.log('Sign-up link added to the DOM. Navigating to sign-up.');
               navigateToSignUp();
-              observer.disconnect();
+              observer.disconnect(); // Stop observing after navigation
             }
           });
         });
       });
 
-      // Observe the whole document for changes
+      // Observe the document for changes
       observer.observe(document.body, { childList: true, subtree: true });
     }
 
@@ -84,19 +97,16 @@
       // Start observing if "signup" option is in the URL query parameters
       if (option === "signup") {
         console.log('Signup option detected. Observing DOM for sign-up link.');
-
-        // Adding a timeout to wait for DOM to fully render
-        setTimeout(() => {
-          navigateToSignUp();
-        }, 3000);  // Wait for 3 seconds and then try again to find the link
-
         observeSignUpLink();
+      } else {
+        console.log('Signup option not present in the URL.');
       }
 
-      // Always try to prefill email if login_hint is available
-      prefillEmail();
+      // Prefill email ONLY on the sign-up page (second page, not login)
+      prefillEmailAfterNavigation();
     });
   </script>
+
 
 
 
